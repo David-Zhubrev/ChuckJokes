@@ -1,9 +1,12 @@
 package com.appdav.chuckjokes.ui.jokes;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -23,6 +26,7 @@ import com.appdav.chuckjokes.R;
 import com.appdav.chuckjokes.SnackbarInterface;
 
 import java.util.List;
+import java.util.Objects;
 
 public class JokesFragment extends Fragment implements JokesFragmentInterface.View, OnBackPressedHandler.OnBackPressedListener {
 
@@ -50,6 +54,10 @@ public class JokesFragment extends Fragment implements JokesFragmentInterface.Vi
                              ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_jokes, container, false);
         button = v.findViewById(R.id.button);
+        button.setOnClickListener(button -> {
+            presenter.onButtonClicked(editText.getText().toString());
+            hideKeyboard();
+        });
         recyclerView = v.findViewById(R.id.recyclerView);
         editText = v.findViewById(R.id.editText);
         editText.setOnEditorActionListener((v1, actionId, event) -> {
@@ -75,7 +83,6 @@ public class JokesFragment extends Fragment implements JokesFragmentInterface.Vi
     }
 
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -86,8 +93,6 @@ public class JokesFragment extends Fragment implements JokesFragmentInterface.Vi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        button.setOnClickListener(v ->
-                presenter.onButtonClicked(editText.getText().toString()));
         presenter.attachView(this);
     }
 
@@ -109,6 +114,16 @@ public class JokesFragment extends Fragment implements JokesFragmentInterface.Vi
         } else {
             setFull(jokes);
         }
+    }
+
+    private void hideKeyboard() {
+        Activity activity = getActivity();
+        if (activity == null) return;
+        InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (manager == null) return;
+        View focus = activity.getCurrentFocus();
+        if (focus != null)
+            manager.hideSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     @Override

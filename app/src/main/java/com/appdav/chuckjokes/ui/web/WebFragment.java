@@ -35,14 +35,6 @@ public class WebFragment extends Fragment implements OnBackPressedHandler.OnBack
 
         webView = v.findViewById(R.id.webView);
         progressBar = v.findViewById(R.id.progressBarWeb);
-
-        WebSettings settings = webView.getSettings();
-        settings.setSupportZoom(true);
-        settings.setBuiltInZoomControls(true);
-        settings.setDisplayZoomControls(false);
-        settings.setLoadWithOverviewMode(true);
-        settings.setUseWideViewPort(true);
-
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -56,6 +48,12 @@ public class WebFragment extends Fragment implements OnBackPressedHandler.OnBack
         } else {
             webView.loadUrl(API_MAIN_PAGE_URL);
         }
+        WebSettings settings = webView.getSettings();
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
         return v;
     }
 

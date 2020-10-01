@@ -9,6 +9,9 @@ import retrofit2.Retrofit;
 import retrofit2.Converter.Factory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/** Singleton Joke grabber, providing interface to grab a random joke with API and pushing it back to calling code with Callback
+ *
+ */
 public class JokeGetter {
 
     private JokesApi api;
@@ -29,6 +32,9 @@ public class JokeGetter {
         call.enqueue(callback);
     }
 
+    /** Static retrofit provider, which incapsulates retrofit and gson creation
+     *
+     */
     private static class RetrofitProvider {
 
         static Retrofit getRetrofitInstance() {

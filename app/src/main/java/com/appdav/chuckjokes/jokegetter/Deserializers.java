@@ -9,6 +9,9 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 
+/**
+ * Set of static classes, providing Gson deserialization processors
+ */
 class Deserializers {
 
     public static class JokesListDeserializer implements JsonDeserializer<JokesList> {

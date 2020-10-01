@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.appdav.chuckjokes.OnBackPressedHandler;
 import com.appdav.chuckjokes.R;
 import com.appdav.chuckjokes.SnackbarInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -19,11 +20,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity implements SnackbarInterface {
+public class MainActivity extends AppCompatActivity implements SnackbarInterface, OnBackPressedHandler {
 
     private Snackbar snackbarWrongFormat, snackbarBackPressed;
     private View snackbarAnchorView;
     private View root;
+    private OnBackPressedListener onBackPressedListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,13 +89,36 @@ public class MainActivity extends AppCompatActivity implements SnackbarInterface
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**Finishes activity on double-tap if {@link OnBackPressedListener} is null or if it didn't consumed the action (e.g. returned false)
+     * Double-tap speed is equal to Snackbar show time
+     */
     @Override
     public void onBackPressed() {
-        if (snackbarBackPressed == null) {
-            snackbarBackPressed = Snackbar.make(root, R.string.message_press_back, BaseTransientBottomBar.LENGTH_SHORT);
-            snackbarBackPressed.setAnchorView(snackbarAnchorView);
+        if (onBackPressedListener == null || !onBackPressedListener.onBackPressed()) {
+            if (snackbarBackPressed == null) {
+                snackbarBackPressed = Snackbar.make(root, R.string.message_press_back, BaseTransientBottomBar.LENGTH_SHORT);
+                snackbarBackPressed.setAnchorView(snackbarAnchorView);
+            }
+            if (!snackbarBackPressed.isShown()) snackbarBackPressed.show();
+            else finish();
         }
-        if (!snackbarBackPressed.isShown()) snackbarBackPressed.show();
-        else finish();
+    }
+
+    @Override
+    public void attachBackPressedListener(OnBackPressedListener listener) {
+        this.onBackPressedListener = listener;
+    }
+
+
+    /**
+     * Checks whether this method is called from source that wants to be detached and nullifies it if source and current listener are the same
+     * @param source is source object from which this method is called
+     */
+    @Override
+    public void detachBackPressedListener(OnBackPressedListener source) {
+        if (this.onBackPressedListener == source){
+            onBackPressedListener = null;
+        }
     }
 }

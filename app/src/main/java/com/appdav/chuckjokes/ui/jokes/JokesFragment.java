@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.appdav.chuckjokes.OnBackPressedHandler;
 import com.appdav.chuckjokes.jokegetter.Joke;
 import com.appdav.chuckjokes.JokesRecyclerAdapter;
 import com.appdav.chuckjokes.ui.activities.MainActivity;
@@ -23,7 +24,7 @@ import com.appdav.chuckjokes.SnackbarInterface;
 
 import java.util.List;
 
-public class JokesFragment extends Fragment implements JokesFragmentInterface.View {
+public class JokesFragment extends Fragment implements JokesFragmentInterface.View, OnBackPressedHandler.OnBackPressedListener {
 
     private boolean isEmpty = true;
 
@@ -37,6 +38,7 @@ public class JokesFragment extends Fragment implements JokesFragmentInterface.Vi
 
     private JokesFragmentInterface.Presenter presenter;
     private SnackbarInterface snackbarInterface;
+    private OnBackPressedHandler backPressedHandler;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +69,14 @@ public class JokesFragment extends Fragment implements JokesFragmentInterface.Vi
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        backPressedHandler.detachBackPressedListener(this);
+    }
+
+
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         snackbarInterface = (MainActivity) getActivity();
@@ -86,6 +96,9 @@ public class JokesFragment extends Fragment implements JokesFragmentInterface.Vi
     public void onResume() {
         super.onResume();
         presenter.viewIsReady();
+        backPressedHandler = (MainActivity) getActivity();
+        assert backPressedHandler != null;
+        backPressedHandler.attachBackPressedListener(this);
     }
 
 
@@ -149,6 +162,7 @@ public class JokesFragment extends Fragment implements JokesFragmentInterface.Vi
     public void onDestroy() {
         super.onDestroy();
         presenter = null;
+        backPressedHandler = null;
     }
 
 }

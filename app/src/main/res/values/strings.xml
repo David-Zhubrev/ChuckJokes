@@ -5,10 +5,10 @@
     <string name="title_api_info">Api info</string>
 
     <string name="tv_empty">The list is empty. Press button to get new jokes!</string>
-    <string name="button_get">Update jokes</string>
+    <string name="button_get">Reload</string>
     <string name="button_retry">Retry</string>
 
-    <string name="et_hint">Enter quantity</string>
+    <string name="et_hint">Count</string>
 
     <string name="message_wrong_format">Wrong number format</string>
     <string name="message_failure">Failed to get jokes. Check your internet connection and try again.</string>

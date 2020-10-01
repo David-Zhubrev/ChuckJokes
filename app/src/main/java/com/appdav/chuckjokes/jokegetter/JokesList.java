@@ -3,6 +3,9 @@ package com.appdav.chuckjokes.jokegetter;
 import java.util.ArrayList;
 import java.util.List;
 
+/** This class is needed for Gson deserialization
+ *
+ */
 public class JokesList {
 
     private List<Joke> jokes;

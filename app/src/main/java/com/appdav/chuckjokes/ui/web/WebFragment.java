@@ -10,20 +10,23 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.appdav.chuckjokes.OnBackPressedHandler;
 import com.appdav.chuckjokes.R;
+import com.appdav.chuckjokes.ui.activities.MainActivity;
 
-public class WebFragment extends Fragment {
+public class WebFragment extends Fragment implements OnBackPressedHandler.OnBackPressedListener {
 
     private WebView webView;
     private ProgressBar progressBar;
     private static final String API_MAIN_PAGE_URL = "http://www.icndb.com/api/";
+    private OnBackPressedHandler backPressedHandler;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onPause() {
+        super.onPause();
+        backPressedHandler.detachBackPressedListener(this);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -48,8 +51,39 @@ public class WebFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
             }
         });
-        webView.loadUrl(API_MAIN_PAGE_URL);
+        if (savedInstanceState != null) {
+            webView.restoreState(savedInstanceState);
+        } else {
+            webView.loadUrl(API_MAIN_PAGE_URL);
+        }
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        backPressedHandler = (MainActivity) getActivity();
+        assert backPressedHandler != null;
+        backPressedHandler.attachBackPressedListener(this);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return true;
+        } else return false;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        backPressedHandler = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        webView.saveState(outState);
+    }
 }
